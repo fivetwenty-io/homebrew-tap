@@ -25,8 +25,6 @@ drop-in replacement (including under Genesis).
 | `pmx` | Proxmox command-line interface (VE / PBS / PDM) | [fivetwenty-io/proxmox-cli](https://github.com/fivetwenty-io/proxmox-cli) |
 | `graft` | YAML/JSON merging and templating CLI, spruce-compatible | [fivetwenty-io/graft](https://github.com/fivetwenty-io/graft) |
 
-The `pmx` cask is generated and pushed automatically by
-[GoReleaser](https://goreleaser.com) when a release is tagged in the source
-repository — do not edit it by hand. The `graft` cask is hand-maintained;
-update its version and sha256 values from the release checksums file when a
-new graft release is tagged.
+Both casks are generated and pushed automatically by
+[GoReleaser](https://goreleaser.com) when a release is tagged in the
+corresponding source repository — do not edit them by hand.
