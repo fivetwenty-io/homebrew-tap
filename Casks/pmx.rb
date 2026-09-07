@@ -28,65 +28,55 @@ cask "pmx" do
   end
 
   binary "pmx"
-  bash_completion "share/bash-completion/completions/pmx.bash"
-  fish_completion "share/fish/vendor_completions.d/pmx.fish"
-  zsh_completion "share/zsh/site-functions/_pmx"
 
-  postflight do
-    %w[pve pbs pdm].each do |persona|
-      link = HOMEBREW_PREFIX/"bin"/persona
-      link.delete if link.symlink? || link.exist?
-      link.make_symlink("pmx")
-    end
-    # Bulk-link man pages and persona completions from the staged
-    # cask content. Everything links into HOMEBREW_PREFIX in one quiet
-    # pass; the uninstall hook removes any symlink in these dirs that
-    # points back into this cask's Caskroom.
-    %w[
-      share/man/man1
-      share/man/man5
-      share/bash-completion/completions
-      share/zsh/site-functions
-      share/fish/vendor_completions.d
-    ].each do |reldir|
-      src = staged_path/reldir
-      next unless src.directory?
+  postflight_steps do
+    # pve, pbs, and pdm are pmx under a different argv[0] — internal/cli.Persona
+    # reads it to pick the command tree — so each one has to be a link to the
+    # binary rather than a copy of it.
+    symlink "pmx", "bin/pve", source_base: :relative, target_base: :homebrew_prefix,
+            overwrite: true, remove_on_uninstall: true
+    symlink "pmx", "bin/pbs", source_base: :relative, target_base: :homebrew_prefix,
+            overwrite: true, remove_on_uninstall: true
+    symlink "pmx", "bin/pdm", source_base: :relative, target_base: :homebrew_prefix,
+            overwrite: true, remove_on_uninstall: true
 
-      dst = HOMEBREW_PREFIX/reldir
-      dst.mkpath
-      src.children.each do |file|
-        # pmx completions are already linked by the `completions:`
-        # artifact stanza; skip them so the two mechanisms don't fight.
-        next if %w[pmx.bash _pmx pmx.fish].include?(file.basename.to_s)
+    # Create every target directory first. A globbed `symlink` that matches a
+    # single file links to the target path itself unless that path is already
+    # a directory, and man5 holds exactly one page — without this, a prefix
+    # with no share/man/man5 yet would get a *file* named man5.
+    mkdir_p "share/man/man1", base: :homebrew_prefix
+    mkdir_p "share/man/man5", base: :homebrew_prefix
+    mkdir_p "etc/bash_completion.d", base: :homebrew_prefix
+    mkdir_p "share/zsh/site-functions", base: :homebrew_prefix
+    mkdir_p "share/fish/vendor_completions.d", base: :homebrew_prefix
 
-        link = dst/file.basename
-        link.delete if link.symlink? || link.exist?
-        link.make_symlink(file)
-      end
-    end
+    # Bulk-link the man pages and every persona's completions out of the staged
+    # cask content. A `manpage` artifact per file would print an ohai line on
+    # every link and unlink, roughly 3,000 of them per install for pmx, and a
+    # globbed symlink does the same work in silence.
+    symlink "share/man/man1/*", "share/man/man1", source_base: :staged_path,
+            target_base: :homebrew_prefix, source_glob: true, overwrite: true
+    symlink "share/man/man5/*", "share/man/man5", source_base: :staged_path,
+            target_base: :homebrew_prefix, source_glob: true, overwrite: true
+    # Bash completions go to the compat directory, which bash-completion reads
+    # whole. Its other directory loads a file only when the file is named for
+    # the command, and these keep their .bash suffix.
+    symlink "share/bash-completion/completions/*", "etc/bash_completion.d", source_base: :staged_path,
+            target_base: :homebrew_prefix, source_glob: true, overwrite: true
+    symlink "share/zsh/site-functions/*", "share/zsh/site-functions", source_base: :staged_path,
+            target_base: :homebrew_prefix, source_glob: true, overwrite: true
+    symlink "share/fish/vendor_completions.d/*", "share/fish/vendor_completions.d", source_base: :staged_path,
+            target_base: :homebrew_prefix, source_glob: true, overwrite: true
   end
 
-  uninstall_postflight do
-    %w[pve pbs pdm].each do |persona|
-      link = HOMEBREW_PREFIX/"bin"/persona
-      link.delete if link.symlink?
-    end
-    %w[
-      share/man/man1
-      share/man/man5
-      share/bash-completion/completions
-      share/zsh/site-functions
-      share/fish/vendor_completions.d
-    ].each do |reldir|
-      dir = HOMEBREW_PREFIX/reldir
-      next unless dir.directory?
-
-      dir.children.each do |link|
-        next unless link.symlink?
-
-        link.delete if link.readlink.to_s.include?("/Caskroom/pmx/")
-      end
-    end
+  uninstall_postflight_steps do
+    # A globbed `symlink` records nothing per link for the uninstall phase, so
+    # the links it made are swept out by hand here. Matching on the link target
+    # leaves every other formula's and cask's links in these shared directories
+    # alone.
+    remove ["share/man/man1/*", "share/man/man5/*", "etc/bash_completion.d/*",
+            "share/zsh/site-functions/*", "share/fish/vendor_completions.d/*"],
+           base: :homebrew_prefix, symlink_target_contains: "/Caskroom/pmx/"
   end
 
   # No zap stanza required
