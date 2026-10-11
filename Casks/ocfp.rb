@@ -8,25 +8,25 @@ cask "ocfp" do
     end
   end
 
-  version "0.3.16"
+  version "0.3.17"
 
   on_macos do
     on_arm do
-      sha256 "c42818ff77da4a0e8f09d03bd3909ea19398ac4ec801cd58fc09276765633e54"
+      sha256 "10065a1a69836ee002c7582b8bfb810e66f0b6c63572b9fea6af65d3a0fa53d2"
       url "https://github.com/fivetwenty-io/ocfp-cli/releases/download/v#{version}/ocfp_#{version}_darwin_arm64.tar.gz"
     end
     on_intel do
-      sha256 "ec61b6c08d9b9ef5a8de659b7310a80d79c9096a3415372510b0adb9d3b3b29c"
+      sha256 "311dca756efd14caebb13cc5fd264c50e57a2d2688f1984234788345b5fe9eec"
       url "https://github.com/fivetwenty-io/ocfp-cli/releases/download/v#{version}/ocfp_#{version}_darwin_amd64.tar.gz"
     end
   end
   on_linux do
     on_arm do
-      sha256 "53483af86eef064cab7217797c9f38ec6011117087a5cee434daa188d9f716b2"
+      sha256 "21e619ad00797d51fbe1a2181584fc6c782280ea547a7c1b360c8890a1734ecc"
       url "https://github.com/fivetwenty-io/ocfp-cli/releases/download/v#{version}/ocfp_#{version}_linux_arm64.tar.gz"
     end
     on_intel do
-      sha256 "6f30bef1efb643dcf09c5f7a198fd61312b4f7cf2d584ee58bd634327d546943"
+      sha256 "0763118ddf4e76349e09a93d9402c14a3585dfac02ed9d65ee32b5997189eab4"
       url "https://github.com/fivetwenty-io/ocfp-cli/releases/download/v#{version}/ocfp_#{version}_linux_amd64.tar.gz"
     end
   end
