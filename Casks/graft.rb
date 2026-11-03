@@ -8,25 +8,25 @@ cask "graft" do
     end
   end
 
-  version "1.44.0"
+  version "1.44.1"
 
   on_macos do
     on_arm do
-      sha256 "d2cf47ab3cf16fdb5e36566e10d6c30288738223e97c69b0e17a422b5873fa22"
+      sha256 "971981b98e2859ac615d455493f9ed7f715b31b81ec86e1b6df5ae8cbdf4358c"
       url "https://github.com/fivetwenty-io/graft/releases/download/v#{version}/graft_#{version}_darwin_arm64.tar.gz"
     end
     on_intel do
-      sha256 "bdc3e65f14c394710df74a52364b3eeeb163a0b0eaf0dacdab964c605c413ab9"
+      sha256 "278d9de02ea83c6eb9dc79d38f6d52c9f1460d0068c27e2210580941bff0ad3b"
       url "https://github.com/fivetwenty-io/graft/releases/download/v#{version}/graft_#{version}_darwin_amd64.tar.gz"
     end
   end
   on_linux do
     on_arm do
-      sha256 "c6416470de518d05e482f024d50b3b36bd11529f744f4717f42f1c8e501f283e"
+      sha256 "f98cec882dd269b9a5981d89472f8d06ce9ee92bee00878cfb610cf210f5fab6"
       url "https://github.com/fivetwenty-io/graft/releases/download/v#{version}/graft_#{version}_linux_arm64.tar.gz"
     end
     on_intel do
-      sha256 "dc3371a1700679f63fc48350ae7c7394b13af56be3e1afce1fa3fb0c97097bd3"
+      sha256 "0f61145db1f9174dc9f6c36457020a580e9edd6f2fb846ba0b07f17d9ac23d58"
       url "https://github.com/fivetwenty-io/graft/releases/download/v#{version}/graft_#{version}_linux_amd64.tar.gz"
     end
   end
